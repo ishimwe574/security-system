@@ -1,0 +1,327 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SECURITY SYSTEM</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #e3e6ee;
+      color: white;
+    }
+
+    /* LOGIN */
+    #login {
+      width: 320px;
+      margin: 100px auto;
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    /* DASHBOARD */
+    #dashboard {
+      display: none;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2e0056;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .status {
+      color: #22c55e;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .danger {
+      color: red;
+      font-weight: bold;
+    }
+
+    img {
+      border-radius: 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+  
+
+<!-- LOGIN -->
+<div id="login">
+
+  <h2> Security Login</h2>
+
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+
+  <p id="msg" style="color:red;"></p>
+
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+  <div class="header">
+    <h2> SECURITY SYSTEM DASHBOARD</h2>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- STATUS -->
+    <div class="card">
+      <h3> System Status</h3>
+
+      <p id="systemStatus" class="status">SAFE</p>
+
+      <p>All systems normal</p>
+    </div>
+
+    <!-- ULTRASONIC -->
+    <div class="card">
+      <h3> Ultrasonic Sensor</h3>
+
+      <p>Distance:
+        <span id="distance">--</span> cm
+      </p>
+
+      <button onclick="simulateDistance()">
+        Test Sensor
+      </button>
+    </div>
+
+    <!-- SERVO -->
+    <div class="card">
+      <h3> Servo Motor</h3>
+
+      <button onclick="alert('Servo 0')">0 </button>
+
+      <button onclick="alert('Servo 90')">90</button>
+
+      <button onclick="alert('Servo 180')">180</button>
+    </div>
+
+    <!-- RELAY -->
+    <div class="card">
+      <h3></h3> Relay Control</h3>
+
+      <button onclick="alert('Relay ON')">ON</button>
+
+      <button onclick="alert('Relay OFF')">OFF</button>
+    </div>
+
+    <!-- BUZZER -->
+    <div class="card">
+      <h3>Buzzer</h3>
+
+      <button onclick="alert('Buzzer ON')">
+        Activate
+      </button>
+
+      <button onclick="alert('Buzzer OFF')">
+        Stop
+      </button>
+    </div>
+
+    <!-- GSM -->
+    <div class="card">
+      <h3> GSM Module</h3>
+
+      <button onclick="alert('SMS sent: ALERT!')">
+        Send SMS
+      </button>
+
+      <button onclick="alert('Calling Owner ')">
+        Call
+      </button>
+    </div>
+
+    <!-- LIVE CAMERA -->
+    <div class="card">
+
+      <h3> Live Camera</h3>
+
+      <img
+        id="camera"
+        src="http://192.168.137.122:81/stream";
+        width="100%"
+      >
+
+      <br><br>
+
+      <button onclick="Camera()">
+      </button>
+
+      <button onclick="Camera()">
+        
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let timer;
+
+// LOGIN
+function login() {
+
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  if (u === "ishimwe" && p === "1234") {
+
+    document.getElementById("login").style.display = "none";
+
+    document.getElementById("dashboard").style.display = "block";
+
+    resetTimer();
+
+  } else {
+
+    document.getElementById("msg").innerText =
+    "Wrong login!";
+  }
+}
+
+// LOGOUT
+function logout() {
+
+  document.getElementById("dashboard").style.display = "none";
+
+  document.getElementById("login").style.display = "block";
+}
+
+// ULTRASONIC
+function simulateDistance() {
+
+  let d = Math.floor(Math.random() * 200);
+
+  document.getElementById("distance").innerText = d;
+
+  if (d < 50) {
+
+    alert("Intruder Detected!");
+
+    document.getElementById("systemStatus").innerText =
+    "DANGER";
+
+    document.getElementById("systemStatus").className =
+    "danger";
+
+  } else {
+
+    document.getElementById("systemStatus").innerText =
+    "SAFE";
+
+    document.getElementById("systemStatus").className =
+    "status";
+  }
+}
+
+// CAMERA START
+function startCamera() {
+
+  // replace with your ESP32-CAM IP
+  document.getElementById("camera").src =
+  "https://192.168.137.122:81/stream";
+}
+
+// CAMERA STOP
+function stopCamera() {
+
+  document.getElementById("camera").src =
+  "https://192.168.137.122:81/stream";
+}
+
+// AUTO LOGOUT
+function resetTimer() {
+
+  clearTimeout(timer);
+
+  timer = setTimeout(() => {
+
+    alert(" Session expired");
+
+    logout();
+
+  }, 30000);
+}
+
+// detect activity
+document.onmousemove = resetTimer;
+document.onkeypress = resetTimer;
+document.onclick = resetTimer;
+
+// BACK BUTTON BLOCK
+window.onpopstate = function () {
+  history.pushState(null, null, location.href);
+};
+
+// INIT
+window.onload = function () {
+  history.pushState(null, null, location.href);
+};
+
+</script>
+
+</body>
+</html>
+```
